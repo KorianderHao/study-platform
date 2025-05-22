@@ -37,8 +37,15 @@ export default function UploadPage() {
       },
     ]);
 
-    setMessage(dbError ? dbError.message : '上传成功！');
-  };
+if (dbError) {
+  setMessage(`写入数据库失败：${dbError.message}`);
+  return;
+}
+
+setMessage('上传成功，正在跳转...');
+setTimeout(() => {
+  window.location.href = '/resources';
+}, 1500);
 
   return (
     <div className="max-w-xl mx-auto py-10 px-4">
