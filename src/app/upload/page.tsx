@@ -27,7 +27,7 @@ export default function UploadPage() {
       return;
     }
 
-    const fileUrl = `https://YOUR_PROJECT_ID.supabase.co/storage/v1/object/public/files/${fileName}`;
+    const fileUrl = `https://eacujykpumefrklzbxje.supabase.co/storage/v1/object/public/files/${fileName}`;
 
 const { data, error: dbError } = await supabase
   .from('resources')
@@ -37,8 +37,9 @@ const { data, error: dbError } = await supabase
       description: desc,
       file_url: fileUrl,
     },
-  ])
-  .select(); // 返回所有列
+  ]);
+
+console.log('Insert result:', data);
 
 if (dbError) {
   setMessage(`写入数据库失败：${dbError.message}`);
