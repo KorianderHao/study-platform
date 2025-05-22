@@ -35,7 +35,8 @@ export default function UploadPage() {
         description: desc,
         file_url: fileUrl,
       },
-    ]);
+    ])
+    .select('minimal');
 
 if (dbError) {
   setMessage(`写入数据库失败：${dbError.message}`);
