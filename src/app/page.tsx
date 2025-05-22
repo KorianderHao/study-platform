@@ -1,3 +1,4 @@
+import Link from 'next/link';
 export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 text-gray-800">
@@ -6,7 +7,7 @@ export default function Home() {
         <h1 className="text-xl font-bold">StudyPlatform</h1>
         <nav className="space-x-4">
           <a href="#" className="hover:underline">资料中心</a>
-          <a href="#" className="hover:underline">上传资料</a>
+          <Link href="/upload">上传资料</Link>
           <a href="#" className="hover:underline">关于我们</a>
           <button className="bg-blue-600 text-white px-4 py-1 rounded">登录</button>
         </nav>
