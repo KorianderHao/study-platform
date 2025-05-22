@@ -46,6 +46,7 @@ setMessage('上传成功，正在跳转...');
 setTimeout(() => {
   window.location.href = '/resources';
 }, 1500);
+  };
 
   return (
     <div className="max-w-xl mx-auto py-10 px-4">
@@ -77,3 +78,4 @@ setTimeout(() => {
       {message && <p className="mt-4 text-sm text-red-600">{message}</p>}
     </div>
   );
+}
