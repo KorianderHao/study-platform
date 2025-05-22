@@ -18,7 +18,7 @@ export default function UploadPage() {
 
     const fileExt = file.name.split('.').pop();
     const fileName = `${uuidv4()}.${fileExt}`;
-    const { data: storageData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('files')
       .upload(fileName, file);
 
