@@ -2,13 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 
-type Props = {
+interface PageProps {
   params: {
     folderId: string;
   };
-};
+}
 
-export default function FolderPage({ params }: Props) {
+export default function FolderPage({ params }: PageProps) {
   const router = useRouter();
   const folderId = params.folderId;
 
