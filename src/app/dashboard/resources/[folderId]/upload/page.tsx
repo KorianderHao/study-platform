@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
-import supabase from '@/utils/supabaseClient';
+import { supabase } from '@/utils/supabaseClient';
 
 export default function UploadToFolderPage() {
   const [title, setTitle] = useState('');
