@@ -1,55 +1,86 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { supabase } from '@/utils/supabaseClient';
+import { v4 as uuidv4 } from 'uuid';
 
-type Resource = {
-  id: string;
-  title: string;
-  description: string;
-  file_url: string;
-  created_at: string;
-};
+export default function UploadPage() {
+  const [title, setTitle] = useState('');
+  const [desc, setDesc] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [message, setMessage] = useState('');
 
-export default function ResourcesPage() {
-  const [resources, setResources] = useState<Resource[]>([]);
+  const handleUpload = async () => {
+    if (!file) {
+      setMessage('请选择一个文件');
+      return;
+    }
 
-  useEffect(() => {
-    const fetchResources = async () => {
-      const { data, error } = await supabase
-        .from('resources')
-        .select('*')
-        .order('created_at', { ascending: false });
+    // 上传文件到 Supabase Storage
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${uuidv4()}.${fileExt}`;
+    const { error: uploadError } = await supabase.storage
+      .from('files')
+      .upload(fileName, file);
 
-      if (error) {
-        console.error('获取资料失败', error.message);
-        return;
-      }
+    if (uploadError) {
+      setMessage(`上传失败: ${uploadError.message}`);
+      return;
+    }
 
-      setResources(data || []);
-    };
+    // 构建文件 URL
+    const fileUrl = `https://eacujykpumefrklzbxje.supabase.co/storage/v1/object/public/files/${fileName}`;
 
-    fetchResources();
-  }, []);
+    // 插入数据到 resources 表
+    const { error: dbError } = await supabase
+      .from('resources')
+      .insert([
+        {
+          title,
+          description: desc,
+          file_url: fileUrl,
+        },
+      ]);
+
+    if (dbError) {
+      setMessage(`写入数据库失败: ${dbError.message}`);
+      return;
+    }
+
+    setMessage('上传成功，正在跳转...');
+    setTimeout(() => {
+      window.location.href = '/resources';
+    }, 1500);
+  };
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4">
-      <h2 className="text-2xl font-bold mb-6">最新上传的资料</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {resources.map((item) => (
-          <div key={item.id} className="bg-white shadow p-4 rounded">
-            <h3 className="text-lg font-semibold">{item.title}</h3>
-            <p className="text-sm text-gray-600 mb-2">{item.description}</p>
-            <a
-              href={item.file_url}
-              target="_blank"
-              className="text-blue-600 hover:underline text-sm"
-            >
-              查看文件
-            </a>
-          </div>
-        ))}
-      </div>
+    <div className="max-w-xl mx-auto py-10 px-4">
+      <h2 className="text-2xl font-bold mb-4">上传资料</h2>
+      <input
+        type="text"
+        placeholder="标题"
+        className="w-full border mb-3 px-3 py-2 rounded"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      <textarea
+        placeholder="描述"
+        className="w-full border mb-3 px-3 py-2 rounded"
+        value={desc}
+        onChange={(e) => setDesc(e.target.value)}
+      />
+      <input
+        type="file"
+        className="mb-4"
+        onChange={(e) => setFile(e.target.files?.[0] || null)}
+      />
+      <button
+        onClick={handleUpload}
+        className="bg-blue-600 text-white px-6 py-2 rounded"
+      >
+        上传
+      </button>
+      {message && <p className="mt-4 text-sm text-red-600">{message}</p>}
     </div>
   );
 }
