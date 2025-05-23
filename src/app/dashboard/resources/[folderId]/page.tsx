@@ -1,10 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
-export default function FolderPage({ params }: { params: { folderId: string } }) {
+export default function FolderPage() {
   const router = useRouter();
-  const folderId = params.folderId;
+  const params = useParams();
+  const folderId = params.folderId as string;
 
   return (
     <div className="p-6">
@@ -12,7 +13,7 @@ export default function FolderPage({ params }: { params: { folderId: string } })
       <p className="mt-4 text-gray-700">未来你可以在这里显示该文件夹下的资源内容。</p>
 
       <button
-        className="bg-green-600 text-white px-4 py-2 rounded mb-4 mt-6"
+        className="bg-green-600 text-white px-4 py-2 rounded mt-6"
         onClick={() => router.push(`/dashboard/resources/${folderId}/upload`)}
       >
         添加文件
